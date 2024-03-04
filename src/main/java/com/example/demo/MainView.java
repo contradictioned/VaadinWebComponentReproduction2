@@ -1,10 +1,12 @@
 package com.example.demo;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.History;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
@@ -18,10 +20,19 @@ public class MainView extends VerticalLayout {
         // Use TextField for standard text input
         TextField textField = new TextField("Your name");
 
+        UI.getCurrent().getPage().getHistory().setHistoryStateChangeHandler(new History.HistoryStateChangeHandler() {
+            @Override
+            public void onHistoryStateChange(History.HistoryStateChangeEvent event) {
+                System.out.println("HISTORY HAS CHANGED");
+            }
+        });
+
         // Button click listeners can be defined as lambda expressions
         GreetService greetService = new GreetService();
         Button button = new Button("Say hello", e ->  {
             add(new Paragraph(greetService.greet(textField.getValue())));
+
+            UI.getCurrent().getPage().getHistory().pushState(null, "xyz");
         });
 
         // Theme variants give you predefined extra styles for components.
